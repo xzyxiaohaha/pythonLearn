@@ -3,7 +3,7 @@
 # @Author: zyxiao
 # @File: 6字典.py
 # @Software: PyCharm
-#key-valuse键值对形式， key必须是唯一的,用大括号包含起来
+#key-valuse键值对形式， key必须是唯一的,用大括号包含起来。
 
 info={"name":"肖振宇","age":22,"project":"阜阳中考"}
 #字典的访问
