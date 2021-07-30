@@ -4,3 +4,4 @@
 # @File: 8函数.py
 # @Software: PyCharm
 print("函数")
+print("hello")
