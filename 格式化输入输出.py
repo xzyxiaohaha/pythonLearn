@@ -1,7 +1,7 @@
 # -*- codeing = utf-8 -*-
 # @Time : 2021/7/6 16:28
 # @Author : zyxiao
-# @File : hello.py
+# @File : 格式化输入输出.py
 # @Software : PyCharm
 
 #这是单行注释
@@ -32,7 +32,7 @@ print("您的3密码是:"+password)
 print(type(password))
 password=int(password)
 print(password+100)
-#使用%s、%d时，变量类似必须匹配；使用“，”时，都可以；“+”号只能用于字符串的拼接，不能拼接int型
+#使用%s、%d时，变量类型必须匹配；使用“，”时，都可以；“+”号只能用于字符串的拼接，不能拼接int型
 '''
 #print(10<<2)
 #python中非0和非空值为True,0或者None为False
