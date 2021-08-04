@@ -10,7 +10,7 @@ def print_hi(name):
 
 
 # Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+if __name__ == '__main__':   #用来定义文件运行的起始位置
     print_hi('PyCharm')
     print("你是谁啊！")
     print_hi("振宇")
