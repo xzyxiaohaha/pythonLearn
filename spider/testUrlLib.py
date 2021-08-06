@@ -43,14 +43,14 @@ print("Sever是：",response.getheader("Server"))
 
 
 
-url="http://httpbin.org/post"
-headers={
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-}
-data=bytes(urllib.parse.urlencode({"name":"hello"}),encoding="utf-8")
-req=urllib.request.Request(url=url,data=data,headers=headers,method="post")
-response=urllib.request.urlopen(req)
-print(response.read().decode("utf-8"))
+# url="http://httpbin.org/post"
+# headers={
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+# }
+# data=bytes(urllib.parse.urlencode({"name":"hello"}),encoding="utf-8")
+# req=urllib.request.Request(url=url,data=data,headers=headers,method="post")
+# response=urllib.request.urlopen(req)
+# print(response.read().decode("utf-8"))
 
 
 
