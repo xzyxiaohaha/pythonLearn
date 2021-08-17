@@ -14,9 +14,25 @@ def main():
     #1.获取网页
     dataList=getData(baseUrl)
     #3.保存数据
-    savePath=".\\豆瓣电影Top250.xls"   #\\进行转义，也可以直接在前面加“r”
-    # saveData(savePath)
-    askURL("https://movie.douban.com/top250?start=0")
+    savePath="豆瓣电影Top250.xls"   #\\进行转义，也可以直接在前面加“r”
+    saveData(dataList,savePath)
+    # askURL("https://movie.douban.com/top250?start=0")
+
+#影片详情链接的规则
+findLink=re.compile(r'<a href="(.*?)">')   #创建正则表达式对象，表示规则
+#影片图片的链接
+findImgSrc=re.compile(r'<img.*src="(.*?)"',re.S)  #re.S让换行符包含在字符中
+#片名
+findTitle=re.compile(r'<span class="title">(.*)</span>')
+#评分
+findScore=re.compile(r'<span class="rating_num" property="v:average">(.*)</span>')
+#评价人数
+findEvaluate=re.compile(r'<span>(\d*)人评价</span>')
+#找到概况
+findIntroduce=re.compile(r'<span class="inq">(.*)</span>')
+#找到影片的相关内容
+findContent=re.compile(r'<p class="">(.*?)</p>',re.S)  #re.S忽视换行符
+
 
 
 #获取网页
@@ -25,9 +41,50 @@ def getData(baseUrl):
     for i in range(0,10):   #调用获取页面信息的函数10次
         url=baseUrl+str(i*25)
         html=askURL(url)  #保存获取到的网页源码
-        print(i)
+        # print(html)
         # 2.逐一解析数据
+        soup=BeautifulSoup(html,"html.parser")
+        for item in soup.find_all("div",class_="item"):   #查找符合要求的字符串，形成列表
+            # print(item)  #测试查看电影item全部信息
+            data=[]   #保存一部电影所有信息
+            item=str(item)   #把item变成字符串
 
+            #影片详情的链接
+            link=re.findall(findLink,item)[0]   #re库通过正则表达式查找符合的内容(第一个)
+            # print(link)
+            data.append(link)     #添加链接
+
+            imgSrc=re.findall(findImgSrc,item)[0]
+            data.append(imgSrc)    #添加图片
+
+            titles = re.findall(findTitle, item)
+            if len(titles)==2:
+                chineseTitle=titles[0]
+                data.append(chineseTitle)   #添加中国名
+                foreignTitle=titles[1].replace("/","")   #外国名字前有"/"，需要替换成空格
+                data.append(foreignTitle)   #添加外国名
+            else:
+                data.append(titles[0])
+                data.append(' ')    #如果只有一个中文名，把外文名留空
+
+            score = re.findall(findScore, item)[0]
+            data.append(score)  # 添加评分
+
+            evaluateNumber=re.findall(findEvaluate,item)[0]
+            data.append(evaluateNumber)   #添加评价人数
+
+            introduce=re.findall(findIntroduce,item)# 添加概述，此处的概述可能为空
+            if len(introduce)!=0:
+                data.append(introduce[0].replace("。",""))  #去掉句号
+            else:
+                data.append(" ")
+
+            content=re.findall(findContent,item)[0]
+            content=re.sub('<br(\s+)?/>(\s+)?',"",content)   #去掉<br/>,(\s+)?表示去掉里面一个或者多个字符
+            content=re.sub("/","",content)  #替换“/”
+            data.append(content.strip())  #strip()去掉前后的空格
+
+            dataList.append(data)   #把处理好的一部电影放到datalist中
     return dataList
 
 #得到制定一个url的网页内容
@@ -42,7 +99,7 @@ def askURL(url):
         response=urllib.request.urlopen(request)
         html=response.read().decode("utf-8")
         # print(html)
-        f = open("test.txt", "a+",encoding="utf-8")
+        f = open("test.txt", "a+",  encoding="utf-8")
         f.write(html)
     except urllib.error.URLError as e:
         if hasattr(e,"code"):
@@ -57,9 +114,23 @@ def askURL(url):
 
 
 
-def saveData(baseUrl):
+def saveData(dataList,savePath):
     print("save")
+    book = xlwt.Workbook(encoding="utg-8",style_compression=0)  # 创建Workbook对象
+    sheet = book.add_sheet("豆瓣电影top250",cell_overwrite_ok=True)  # 创建工作表,cell_overwrite_ok表示是否可以覆盖
+    col=("电影详情链接","图片链接","影片中文名","影片外国名","评分","评价人数","概况","相关内容")
+    for i in range(0, 8):
+        sheet.write(0,i,col[i])   #列名
+    for i in range(0,250):
+        print("第%d条"%i)
+        data=dataList[i]
+        for j in range(0,8):
+            sheet.write(i+1,j,data[j])  #数据
+
+    book.save(savePath)
+
 
 
 if __name__=="__main__":
     main()
+    print("爬取完毕咯")

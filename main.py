@@ -15,3 +15,6 @@ if __name__ == '__main__':   #用来定义文件运行的起始位置
     print("你是谁啊！")
     print_hi("振宇")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+def da():
+    print("da")
