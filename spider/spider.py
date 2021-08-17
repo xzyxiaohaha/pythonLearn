@@ -14,8 +14,10 @@ def main():
     #1.获取网页
     dataList=getData(baseUrl)
     #3.保存数据
-    savePath="豆瓣电影Top250.xls"   #\\进行转义，也可以直接在前面加“r”
-    saveData(dataList,savePath)
+    # savePath="豆瓣电影Top250.xls"   #\\进行转义，也可以直接在前面加“r”
+    # saveData(dataList,savePath)
+    dbPath="movie.db"
+    saveData2DB(dataList,dbPath)
     # askURL("https://movie.douban.com/top250?start=0")
 
 #影片详情链接的规则
@@ -110,17 +112,14 @@ def askURL(url):
         f.close()  # 关闭文件
     return html
 
-
-
-
-
+#保存数据到表格中
 def saveData(dataList,savePath):
-    print("save")
     book = xlwt.Workbook(encoding="utg-8",style_compression=0)  # 创建Workbook对象
     sheet = book.add_sheet("豆瓣电影top250",cell_overwrite_ok=True)  # 创建工作表,cell_overwrite_ok表示是否可以覆盖
     col=("电影详情链接","图片链接","影片中文名","影片外国名","评分","评价人数","概况","相关内容")
     for i in range(0, 8):
         sheet.write(0,i,col[i])   #列名
+
     for i in range(0,250):
         print("第%d条"%i)
         data=dataList[i]
@@ -129,8 +128,55 @@ def saveData(dataList,savePath):
 
     book.save(savePath)
 
+#创建初始化数据库
+def init_db(dbPath):
+    sql='''
+        create table movie250(
+        id integer primary key autoincrement,
+        info_link text,
+        pic_link text,
+        cname varchar,
+        fname varchar,
+        score numeric,
+        evaluateNumber numeric,
+        introduce text,
+        content text
+        )
+    '''
+    conn=sqlite3.connect(dbPath)
+    cursor=conn.cursor()
+    cursor.execute(sql)
+    conn.commit()
+    conn.close()
+
+#保存数据到数据库中
+def saveData2DB(dataList,dbPath):
+    init_db(dbPath)
+    conn=sqlite3.connect(dbPath)
+    cur=conn.cursor()
+
+    for data in dataList:
+        for index in range(len(data)):
+            if index==4 or index==5:    #第5个和第六个只需要插入数值类型
+                continue
+            else:
+                data[index] = '"' + data[index] + '"'
+
+
+        sql='''
+            insert into movie250(
+            info_link, pic_link, cname, fname, score, evaluateNumber, introduce, content) 
+            values (%s)'''%",".join(data)    #","join(data),把data里的数据用，连接
+        print(sql)
+        cur.execute(sql)
+        conn.commit()
+    cur.close()
+    conn.close()
+    print("...")
+
 
 
 if __name__=="__main__":
     main()
+    # init_db("movieTest.db")
     print("爬取完毕咯")

@@ -46,7 +46,7 @@ conn = sqlite3.connect("test.db")    #打开或创建数据库文件
 print("打开数据库")
 c = conn.cursor()  #获取游标
 sql = "select * from company"
-cursor=c.execute(sql)  #执行sql语句
+cursor=c.execute(sql)  #执行sql语句,查询时不需要commit
 for row in cursor:
     print("id=",row[0],"name=",row[1],"address=",row[3],"salary=",row[4])
 conn.close()    #关闭连接
