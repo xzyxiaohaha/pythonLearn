@@ -1,7 +1,7 @@
 # -*- codeing = utf-8 -*-
 # @Time : 2021/8/17 15:57
 # @Author : zyxiao
-# @File : testSqlite.py
+# @File : testSqlite2.py
 # @Software : {PyCharm}
 
 #-----------1.新建表--------------
