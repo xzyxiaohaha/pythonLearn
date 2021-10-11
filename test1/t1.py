@@ -6,3 +6,8 @@
 
 def add(a,b):
     return a+b
+Person={
+    "name":"xiaohaha",
+    "age":23,
+    "sex":"man"
+}
